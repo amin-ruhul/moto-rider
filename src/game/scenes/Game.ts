@@ -20,8 +20,10 @@ export class Game extends Scene
 
 
     private setupBackground() {
-        this.add.image(360, 640, 'background')
-            .setScale(1);
+        const gameWidth = this.scale.width;
+        const gameHeight = this.scale.height;
+
+        this.add.image(gameWidth/2, gameHeight/2, 'background');
     }
     
     private setupPlatforms() {
@@ -50,7 +52,9 @@ export class Game extends Scene
     }
     
     private setupUI() {
-        this.scoreText = this.add.text(100, 200, "Score: 0", {
+        const gameWidth = this.scale.width;
+        
+        this.scoreText = this.add.text(gameWidth/2-120 , 100, "Score: 0", {
             fontSize: "32px",
             color: "#fff",
             backgroundColor: "#000",
@@ -94,9 +98,12 @@ export class Game extends Scene
         this.isGameOver = true;
         this.groundSpeed = 0;
 
+        const gameWidth = this.scale.width;
+        const gameHeight = this.scale.height;
+
         this.add.text(
-            360,
-            640,
+            gameWidth / 2,
+            gameHeight / 2,
             'GAME OVER',
             {
                 fontSize: '64px',

@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
+import { useViewportSize } from '../hooks/useViewportSize';
 
 export interface IRefPhaserGame
 {
@@ -16,6 +17,7 @@ interface IProps
 export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame({ currentActiveScene }, ref)
 {
     const game = useRef<Phaser.Game | null>(null!);
+    const { width, height } = useViewportSize(720);
 
     useLayoutEffect(() =>
     {
@@ -72,6 +74,14 @@ export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame
             EventBus.removeListener('current-scene-ready');
         }
     }, [currentActiveScene, ref]);
+
+
+    useEffect(() => {
+        if (game.current) {
+            game.current.scale.refresh();
+        }
+    }, [width, height]);
+
 
     return (
         <div id="game-container"></div>
