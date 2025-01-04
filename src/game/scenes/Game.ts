@@ -40,7 +40,7 @@ export class Game extends Scene {
     private setupBike() {
         this.bike = this.physics.add
             .sprite(300, 1000, "bike")
-            .setScale(0.5)
+            .setScale(0.6)
             .refreshBody();
 
         this.bike.setBounce(0.2);
@@ -107,9 +107,10 @@ export class Game extends Scene {
 
         // Delay before restart
         this.time.delayedCall(2000, () => {
-            EventBus.emit(GameEvents.GAME_OVER);
-            this.scene.restart();
             this.isGameOver = false;
+            this.score = 0;
+            EventBus.emit(GameEvents.GAME_OVER);
+            this.scene.start("StartScene");
         });
     }
 
