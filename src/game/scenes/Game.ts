@@ -1,8 +1,7 @@
-import { Scene } from 'phaser';
-import { EventBus } from '../EventBus';
+import { Scene } from "phaser";
+import { EventBus, GameEvents } from "../EventBus";
 
-export class Game extends Scene
-{
+export class Game extends Scene {
     private platforms: Phaser.Physics.Arcade.StaticGroup;
     private bike: Phaser.Physics.Arcade.Sprite;
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -13,48 +12,47 @@ export class Game extends Scene
     private scoreText: Phaser.GameObjects.Text;
     private isGameOver: boolean = false;
 
-    constructor ()
-    {
-        super('Game');
+    constructor() {
+        super("Game");
     }
-
 
     private setupBackground() {
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
 
-        this.add.image(gameWidth/2, gameHeight/2, 'background');
+        this.add.image(gameWidth / 2, gameHeight / 2, "background");
     }
-    
+
     private setupPlatforms() {
         this.platforms = this.physics.add.staticGroup();
-        
+
         // Create three ground platforms
         for (let i = 0; i < 3; i++) {
             const platform = this.platforms.create(
-                360 + i * 720, 
-                1100, 
-                'ground'
+                360 + i * 720,
+                1100,
+                "ground"
             );
             platform.setDepth(1);
         }
     }
-    
+
     private setupBike() {
-        this.bike = this.physics.add.sprite(300, 1000, "bike")
+        this.bike = this.physics.add
+            .sprite(300, 1000, "bike")
             .setScale(0.5)
             .refreshBody();
-    
+
         this.bike.setBounce(0.2);
         this.bike.setCollideWorldBounds(true);
-    
+
         this.physics.add.collider(this.bike, this.platforms);
     }
-    
+
     private setupUI() {
         const gameWidth = this.scale.width;
-        
-        this.scoreText = this.add.text(gameWidth/2-120 , 100, "Score: 0", {
+
+        this.scoreText = this.add.text(gameWidth / 2 - 120, 100, "Score: 0", {
             fontSize: "32px",
             color: "#fff",
             backgroundColor: "#000",
@@ -63,11 +61,10 @@ export class Game extends Scene
                 right: 10,
                 top: 5,
                 bottom: 5,
-            }
+            },
         });
     }
-    
-  
+
     private updateBike() {
         this.platforms.children.iterate((platform: any) => {
             platform.x -= this.groundSpeed;
@@ -77,7 +74,7 @@ export class Game extends Scene
             return true;
         });
 
-        // Bike rotation 
+        // Bike rotation
         if (this.groundSpeed > this.maxSpeed) {
             this.bike.angle -= this.rotationSpeed;
 
@@ -91,7 +88,6 @@ export class Game extends Scene
         }
     }
 
-
     private gameOver() {
         if (this.isGameOver) return;
 
@@ -101,49 +97,42 @@ export class Game extends Scene
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
 
-        this.add.text(
-            gameWidth / 2,
-            gameHeight / 2,
-            'GAME OVER',
-            {
-                fontSize: '64px',
-                color: '#ff0000',
-                fontStyle: 'bold',
-            }
-        ).setOrigin(0.5);
+        this.add
+            .text(gameWidth / 2, gameHeight / 2, "GAME OVER", {
+                fontSize: "64px",
+                color: "#ff0000",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5);
 
         // Delay before restart
         this.time.delayedCall(2000, () => {
+            EventBus.emit(GameEvents.GAME_OVER);
             this.scene.restart();
-            this.isGameOver = false
+            this.isGameOver = false;
         });
     }
 
-    
-    preload ()
-    {
-        this.load.setPath('assets');
-        
-        
-        this.load.image('background', 'background.png');
-        this.load.image('ground', 'ground.png');
+    preload() {
+        this.load.setPath("assets");
+
+        this.load.image("background", "background.png");
+        this.load.image("ground", "ground.png");
         this.load.image("bike", "new-bike.png");
     }
 
-    create (){
-        
+    create() {
         this.setupBackground();
 
         this.setupPlatforms();
-    
-        this.setupBike();
-    
-        this.setupUI();
-    
-        this.cursors = this.input.keyboard.createCursorKeys();
-    
-        EventBus.emit('current-scene-ready', this);
 
+        this.setupBike();
+
+        this.setupUI();
+
+        this.cursors = this.input.keyboard.createCursorKeys();
+
+        EventBus.emit("current-scene-ready", this);
     }
 
     update() {
@@ -163,6 +152,5 @@ export class Game extends Scene
             this.updateBike();
         }
     }
-
-    
 }
+
