@@ -10,7 +10,7 @@ Try the game here: [Play Moto Rider](https://lambent-cucurucho-e59693.netlify.ap
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/moto-rider.git
+    git clone git@github.com:amin-ruhul/moto-rider.git
     ```
 2. Navigate to the project directory:
     ```bash
